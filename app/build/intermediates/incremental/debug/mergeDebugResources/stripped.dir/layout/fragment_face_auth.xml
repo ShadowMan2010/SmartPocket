@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/sp_background">
+
+    <!-- Top header -->
+    <LinearLayout
+        android:id="@+id/layout_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="24dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/face_title"
+            android:textColor="@color/sp_text_primary"
+            android:textSize="24sp"
+            android:fontFamily="sans-serif-light"
+            android:letterSpacing="-0.01" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/face_subtitle"
+            android:textColor="@color/sp_text_tertiary"
+            android:textSize="12sp"
+            android:letterSpacing="0.04" />
+
+    </LinearLayout>
+
+    <!-- Camera preview with oval overlay -->
+    <FrameLayout
+        android:id="@+id/layout_camera"
+        android:layout_width="260dp"
+        android:layout_height="320dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@id/layout_header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Camera preview -->
+        <androidx.camera.view.PreviewView
+            android:id="@+id/preview_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter" />
+
+        <!-- Dark scrim around oval -->
+        <View
+            android:id="@+id/view_face_scrim"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/sp_scrim_light" />
+
+        <!-- Oval guide -->
+        <View
+            android:id="@+id/view_face_oval"
+            android:layout_width="200dp"
+            android:layout_height="250dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_face_oval" />
+
+        <!-- Corner accents - TL -->
+        <View
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="start|top"
+            android:layout_margin="10dp"
+            android:background="@drawable/bg_corner_tl" />
+
+        <!-- Corner accents - TR -->
+        <View
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="end|top"
+            android:layout_margin="10dp"
+            android:background="@drawable/bg_corner_tr" />
+
+        <!-- Corner accents - BL -->
+        <View
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="start|bottom"
+            android:layout_margin="10dp"
+            android:background="@drawable/bg_corner_bl" />
+
+        <!-- Corner accents - BR -->
+        <View
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="10dp"
+            android:background="@drawable/bg_corner_br" />
+
+    </FrameLayout>
+
+    <!-- Status message -->
+    <TextView
+        android:id="@+id/tv_face_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/face_enroll_hint"
+        android:textColor="@color/sp_text_secondary"
+        android:textSize="14sp"
+        android:textAlignment="center"
+        android:paddingHorizontal="32dp"
+        app:layout_constraintTop_toBottomOf="@id/layout_camera"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Liveness progress -->
+    <LinearLayout
+        android:id="@+id/layout_liveness"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="16dp"
+        android:paddingHorizontal="32dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/tv_face_hint"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="LIVENESS CHECK"
+            android:textColor="@color/sp_text_tertiary"
+            android:textSize="11sp"
+            android:letterSpacing="0.08" />
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progress_liveness"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:trackColor="@color/sp_border"
+            app:indicatorColor="@color/sp_accent_primary"
+            app:trackCornerRadius="4dp" />
+
+    </LinearLayout>
+
+    <!-- Action buttons -->
+    <LinearLayout
+        android:id="@+id/layout_actions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Button
+            android:id="@+id/btn_enroll"
+            style="@style/Style.SmartPocket.Button.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="@string/face_enroll" />
+
+        <Button
+            android:id="@+id/btn_verify"
+            style="@style/Style.SmartPocket.Button.Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:text="Verify Now"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btn_re_enroll"
+            style="@style/Style.SmartPocket.Button.Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:text="@string/face_re_enroll"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <!-- Success/Fail overlay -->
+    <FrameLayout
+        android:id="@+id/layout_result_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/sp_scrim_heavy"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/iv_result_icon"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@drawable/ic_check_circle" />
+
+            <TextView
+                android:id="@+id/tv_result_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/face_success"
+                android:textColor="@color/sp_text_primary"
+                android:textSize="20sp"
+                android:fontFamily="sans-serif-light"
+                android:gravity="center" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
