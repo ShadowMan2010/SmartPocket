@@ -10,8 +10,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.smartpocket.R
 import com.smartpocket.databinding.ActivityMainBinding
 import com.smartpocket.service.SmartPocketService
@@ -49,7 +51,20 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
-        binding.bottomNav.setupWithNavController(navController)
+
+        binding.bottomNav.setOnItemSelectedListener { item ->
+            if (item.itemId == navController.currentDestination?.id) {
+                false
+            } else {
+                val options = NavOptions.Builder()
+                    .setPopUpTo(navController.graph.startDestinationId, true)
+                    .setLaunchSingleTop(true)
+                    .setRestoreState(true)
+                    .build()
+                navController.navigate(item.itemId, null, options)
+                true
+            }
+        }
     }
 
     private fun requestRequiredPermissions() {

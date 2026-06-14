@@ -49,8 +49,8 @@ class BluetoothFragment : Fragment() {
 
     private val scanCallback = object : ScanCallback() {
         override fun onScanResult(callbackType: Int, result: ScanResult) {
-            val name = result.device.name ?: return
             val address = result.device.address
+            val name = result.device.name ?: address.takeLast(8)
             val rssi = result.rssi
 
             val device = BluetoothDevice(name = name, address = address, rssi = rssi)
@@ -67,6 +67,9 @@ class BluetoothFragment : Fragment() {
         }
 
         override fun onScanFailed(errorCode: Int) {
+            activity?.runOnUiThread {
+                binding.tvDeviceName.text = "Scan failed (code $errorCode)"
+            }
             stopScan()
         }
     }
@@ -124,6 +127,11 @@ class BluetoothFragment : Fragment() {
         if (!hasBluetoothPermissions()) return
         if (bluetoothAdapter?.isEnabled != true) {
             binding.tvDeviceName.text = "Bluetooth is off"
+            return
+        }
+
+        if (bluetoothLeScanner == null) {
+            binding.tvDeviceName.text = "BLE not supported on this device"
             return
         }
 
