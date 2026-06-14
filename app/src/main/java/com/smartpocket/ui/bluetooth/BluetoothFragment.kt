@@ -9,7 +9,10 @@ import android.bluetooth.le.BluetoothLeScanner
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -47,30 +50,34 @@ class BluetoothFragment : Fragment() {
     private val SCAN_DURATION_MS = 12_000L
     private val RSSI_POLL_INTERVAL_MS = 3_000L
 
-    private val scanCallback = object : ScanCallback() {
+    private val bleScanCallback = object : ScanCallback() {
         override fun onScanResult(callbackType: Int, result: ScanResult) {
             val address = result.device.address
             val name = result.device.name ?: address.takeLast(8)
             val rssi = result.rssi
 
-            val device = BluetoothDevice(name = name, address = address, rssi = rssi)
-            val existing = discoveredDevices.indexOfFirst { it.address == address }
-            if (existing >= 0) {
-                discoveredDevices[existing] = device
-            } else {
-                discoveredDevices.add(device)
-                discoveredDevices.sortByDescending { it.rssi }
-            }
-            activity?.runOnUiThread {
-                devicesAdapter.submitList(discoveredDevices.toList())
-            }
+            upsertDevice(BluetoothDevice(name = name, address = address, rssi = rssi, isPaired = result.device.bondState != android.bluetooth.BluetoothDevice.BOND_NONE))
         }
 
         override fun onScanFailed(errorCode: Int) {
             activity?.runOnUiThread {
-                binding.tvDeviceName.text = "Scan failed (code $errorCode)"
+                binding.tvDeviceName.text = "BLE scan failed (code $errorCode)"
             }
-            stopScan()
+        }
+    }
+
+    private val classicDiscoveryReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            when (intent.action) {
+                android.bluetooth.BluetoothDevice.ACTION_FOUND -> {
+                    val device = intent.getParcelableExtra<android.bluetooth.BluetoothDevice>(android.bluetooth.BluetoothDevice.EXTRA_DEVICE) ?: return
+                    val name = device.name ?: device.address.takeLast(8)
+                    upsertDevice(BluetoothDevice(name = name, address = device.address, rssi = 0, isPaired = device.bondState != android.bluetooth.BluetoothDevice.BOND_NONE))
+                }
+                BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
+                    activity?.runOnUiThread { binding.tvDeviceName.text = getString(R.string.bt_scan_done) }
+                }
+            }
         }
     }
 
@@ -86,6 +93,7 @@ class BluetoothFragment : Fragment() {
         setupClickListeners()
         observeViewModel()
         startSignalRingAnimation()
+        loadBondedDevices()
     }
 
     private fun setupBluetooth() {
@@ -121,7 +129,31 @@ class BluetoothFragment : Fragment() {
         }
     }
 
+    // ─────────────────────────── DEVICE MERGING ───────────────────────────
+
+    private fun upsertDevice(device: BluetoothDevice) {
+        val existing = discoveredDevices.indexOfFirst { it.address == device.address }
+        if (existing >= 0) {
+            discoveredDevices[existing] = device
+        } else {
+            discoveredDevices.add(device)
+        }
+        discoveredDevices.sortWith(compareByDescending<BluetoothDevice> { it.isPaired }.thenByDescending { it.rssi })
+        activity?.runOnUiThread {
+            devicesAdapter.submitList(discoveredDevices.toList())
+        }
+    }
+
     // ─────────────────────────── SCANNING ───────────────────────────
+
+    private fun loadBondedDevices() {
+        if (!hasBluetoothPermissions()) return
+        val bonded = bluetoothAdapter?.bondedDevices ?: return
+        for (device in bonded) {
+            val name = device.name ?: device.address.takeLast(8)
+            upsertDevice(BluetoothDevice(name = name, address = device.address, rssi = 0, isPaired = true))
+        }
+    }
 
     private fun startScan() {
         if (!hasBluetoothPermissions()) return
@@ -130,21 +162,30 @@ class BluetoothFragment : Fragment() {
             return
         }
 
-        if (bluetoothLeScanner == null) {
-            binding.tvDeviceName.text = "BLE not supported on this device"
-            return
-        }
-
         isScanning = true
         discoveredDevices.clear()
-        devicesAdapter.submitList(emptyList())
+        loadBondedDevices()
+        devicesAdapter.submitList(discoveredDevices.toList())
         binding.btnScan.text = "Stop Scan"
+        binding.tvDeviceName.text = getString(R.string.bt_scanning)
 
-        val settings = ScanSettings.Builder()
-            .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-            .build()
+        // Start BLE scan
+        if (bluetoothLeScanner != null) {
+            val settings = ScanSettings.Builder()
+                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                .build()
+            try { bluetoothLeScanner?.startScan(null, settings, bleScanCallback) } catch (_: Exception) {}
+        }
 
-        bluetoothLeScanner?.startScan(null, settings, scanCallback)
+        // Start classic Bluetooth discovery
+        try { bluetoothAdapter?.startDiscovery() } catch (_: Exception) {}
+
+        // Register classic discovery receiver
+        val filter = IntentFilter().apply {
+            addAction(android.bluetooth.BluetoothDevice.ACTION_FOUND)
+            addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
+        }
+        requireContext().registerReceiver(classicDiscoveryReceiver, filter)
 
         // Auto-stop scan after duration
         scanHandler.postDelayed({ stopScan() }, SCAN_DURATION_MS)
@@ -155,7 +196,9 @@ class BluetoothFragment : Fragment() {
         isScanning = false
         binding.btnScan.text = getString(R.string.bt_scan)
         scanHandler.removeCallbacksAndMessages(null)
-        try { bluetoothLeScanner?.stopScan(scanCallback) } catch (_: Exception) {}
+        try { bluetoothLeScanner?.stopScan(bleScanCallback) } catch (_: Exception) {}
+        try { bluetoothAdapter?.cancelDiscovery() } catch (_: Exception) {}
+        try { requireContext().unregisterReceiver(classicDiscoveryReceiver) } catch (_: Exception) {}
     }
 
     private fun setGuardianDevice(device: BluetoothDevice) {
@@ -180,7 +223,6 @@ class BluetoothFragment : Fragment() {
     private val rssiRunnable = object : Runnable {
         override fun run() {
             val device = guardianDevice ?: return
-            // Simulate RSSI reading (in real implementation, use GATT readRemoteRssi())
             pollRssiFromDevice(device)
             rssiHandler.postDelayed(this, RSSI_POLL_INTERVAL_MS)
         }
@@ -236,8 +278,6 @@ class BluetoothFragment : Fragment() {
     }
 
     private fun onBeyondRange(rssi: Int) {
-        // Triggered when device goes beyond set range threshold
-        // ViewModel handles the rest
     }
 
     // ─────────────────────────── UI / ANIMATIONS ───────────────────────────
@@ -285,6 +325,8 @@ class BluetoothFragment : Fragment() {
                     PackageManager.PERMISSION_GRANTED
         } else {
             ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) ==
+                    PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.BLUETOOTH) ==
                     PackageManager.PERMISSION_GRANTED
         }
     }

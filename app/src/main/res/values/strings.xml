@@ -50,6 +50,8 @@
     <string name="bt_title">Bluetooth Guard</string>
     <string name="bt_subtitle">Alert when phone strays from your device</string>
     <string name="bt_scan">Scan for Devices</string>
+    <string name="bt_scanning">Scanning for devices…</string>
+    <string name="bt_scan_done">Scan complete</string>
     <string name="bt_paired_device">Paired Guardian Device</string>
     <string name="bt_no_device">No guardian device set</string>
     <string name="bt_range_label">Alert Range</string>

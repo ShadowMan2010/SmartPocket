@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
                 false
             } else {
                 val options = NavOptions.Builder()
-                    .setPopUpTo(navController.graph.startDestinationId, true)
+                    .setPopUpTo(navController.graph.startDestinationId, false)
                     .setLaunchSingleTop(true)
                     .setRestoreState(true)
                     .build()
