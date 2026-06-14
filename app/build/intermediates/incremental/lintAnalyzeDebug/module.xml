@@ -1,0 +1,19 @@
+<lint-module
+    format="1"
+    dir="/home/dhruba/Downloads/SmartPocket/app"
+    name=":app"
+    type="APP"
+    maven="SmartPocket:app:"
+    agpVersion="8.1.0"
+    buildFolder="build"
+    bootClassPath="/home/dhruba/android-sdk/platforms/android-34/android.jar:/home/dhruba/android-sdk/build-tools/33.0.1/core-lambda-stubs.jar"
+    javaSourceLevel="17"
+    compileTarget="android-34"
+    neverShrinking="true">
+  <lintOptions
+      abortOnError="true"
+      absolutePaths="true"
+      checkReleaseBuilds="true"
+      explainIssues="true"/>
+  <variant name="debug"/>
+</lint-module>

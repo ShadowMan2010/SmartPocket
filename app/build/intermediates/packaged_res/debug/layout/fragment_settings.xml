@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/sp_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="24dp"
+        android:paddingBottom="32dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:text="@string/settings_title"
+            android:textColor="@color/sp_text_primary"
+            android:textSize="24sp"
+            android:fontFamily="sans-serif-light"
+            android:letterSpacing="-0.01" />
+
+        <!-- Security Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:layout_marginHorizontal="24dp"
+            android:text="SECURITY"
+            android:textColor="@color/sp_text_tertiary"
+            android:textSize="11sp"
+            android:letterSpacing="0.08" />
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Style.SmartPocket.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Auto-arm -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="20dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/settings_auto_arm"
+                        android:textColor="@color/sp_text_primary"
+                        android:textSize="15sp" />
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_auto_arm"
+                        style="@style/Style.SmartPocket.Switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/sp_divider" android:layout_marginHorizontal="20dp"/>
+
+                <!-- Silent alarm -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="20dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/settings_silent_alarm"
+                        android:textColor="@color/sp_text_primary"
+                        android:textSize="15sp" />
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_silent_alarm"
+                        style="@style/Style.SmartPocket.Switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/sp_divider" android:layout_marginHorizontal="20dp"/>
+
+                <!-- Alarm delay -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="20dp"
+                    android:gravity="center_vertical">
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/settings_alarm_delay"
+                            android:textColor="@color/sp_text_primary"
+                            android:textSize="15sp" />
+                        <TextView
+                            android:id="@+id/tv_delay_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="5 seconds"
+                            android:textColor="@color/sp_text_tertiary"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+                    <com.google.android.material.slider.Slider
+                        android:id="@+id/slider_delay"
+                        android:layout_width="140dp"
+                        android:layout_height="wrap_content"
+                        android:value="5"
+                        android:valueFrom="0"
+                        android:valueTo="30"
+                        app:trackColorActive="@color/sp_accent_primary"
+                        app:trackColorInactive="@color/sp_border"
+                        app:thumbColor="@color/sp_accent_secondary"
+                        app:thumbRadius="8dp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Notifications Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginHorizontal="24dp"
+            android:text="NOTIFICATIONS"
+            android:textColor="@color/sp_text_tertiary"
+            android:textSize="11sp"
+            android:letterSpacing="0.08" />
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Style.SmartPocket.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="20dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Bag breach alerts"
+                        android:textColor="@color/sp_text_primary"
+                        android:textSize="15sp" />
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_notif_bag"
+                        style="@style/Style.SmartPocket.Switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true" />
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/sp_divider" android:layout_marginHorizontal="20dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="20dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Bluetooth range alerts"
+                        android:textColor="@color/sp_text_primary"
+                        android:textSize="15sp" />
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_notif_bt"
+                        style="@style/Style.SmartPocket.Switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- About -->
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Style.SmartPocket.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="24dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <FrameLayout
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="@drawable/bg_icon_container">
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_shield"
+                            android:tint="@color/sp_accent_secondary" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="12dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/app_name"
+                            android:textColor="@color/sp_text_primary"
+                            android:textSize="16sp"
+                            android:fontFamily="sans-serif-medium" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/settings_version"
+                            android:textColor="@color/sp_text_tertiary"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>
