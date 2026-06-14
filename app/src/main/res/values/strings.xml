@@ -1,0 +1,91 @@
+<resources>
+    <string name="app_name">Smart Pocket</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_face">Face ID</string>
+    <string name="nav_bluetooth">Bluetooth</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Home screen -->
+    <string name="status_armed">Armed</string>
+    <string name="status_disarmed">Disarmed</string>
+    <string name="status_alert">Alert</string>
+    <string name="status_lockdown">Lockdown</string>
+    <string name="label_bag_sensor">Bag Sensor</string>
+    <string name="label_face_id">Face ID</string>
+    <string name="label_bt_guard">BT Guard</string>
+    <string name="label_active">Active</string>
+    <string name="label_inactive">Inactive</string>
+    <string name="label_enrolled">Enrolled</string>
+    <string name="label_not_enrolled">Not enrolled</string>
+    <string name="label_connected">Connected</string>
+    <string name="label_disconnected">Disconnected</string>
+    <string name="btn_arm">Arm Security</string>
+    <string name="btn_disarm">Disarm</string>
+    <string name="greeting_secure">All systems secure</string>
+    <string name="greeting_check">Security check needed</string>
+    <string name="tap_to_arm">Tap the shield to arm protection</string>
+
+    <!-- Bag Detection -->
+    <string name="bag_title">Bag Breach Detector</string>
+    <string name="bag_desc">Uses proximity and light sensors to detect when your bag is opened</string>
+    <string name="bag_covered">Bag closed — sensors normal</string>
+    <string name="bag_opened">Bag opened — breach detected!</string>
+    <string name="bag_sensitivity">Sensitivity</string>
+
+    <!-- Face Auth -->
+    <string name="face_title">Face Recognition</string>
+    <string name="face_subtitle">Offline · On-device processing</string>
+    <string name="face_enroll">Enroll Your Face</string>
+    <string name="face_enroll_hint">Position your face within the oval. Ensure good lighting.</string>
+    <string name="face_liveness_hint">Please blink slowly…</string>
+    <string name="face_success">Identity verified</string>
+    <string name="face_fail">Face not recognized</string>
+    <string name="face_liveness_fail">Liveness check failed</string>
+    <string name="face_captured">Face enrolled successfully</string>
+    <string name="face_re_enroll">Re-enroll Face</string>
+
+    <!-- Bluetooth -->
+    <string name="bt_title">Bluetooth Guard</string>
+    <string name="bt_subtitle">Alert when phone strays from your device</string>
+    <string name="bt_scan">Scan for Devices</string>
+    <string name="bt_paired_device">Paired Guardian Device</string>
+    <string name="bt_no_device">No guardian device set</string>
+    <string name="bt_range_label">Alert Range</string>
+    <string name="bt_signal_strong">Strong signal</string>
+    <string name="bt_signal_medium">Medium signal</string>
+    <string name="bt_signal_weak">Weak signal — moving away</string>
+    <string name="bt_signal_lost">Signal lost — Alert!</string>
+
+    <!-- Lockdown -->
+    <string name="lockdown_title">LOCKDOWN ACTIVE</string>
+    <string name="lockdown_message">Unauthorized access detected.\nFace verification required to unlock.</string>
+    <string name="lockdown_verify">Verify Identity</string>
+    <string name="lockdown_emergency">Emergency Contact</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_security">Security</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_auto_arm">Auto-arm on lock screen</string>
+    <string name="settings_silent_alarm">Silent alarm mode</string>
+    <string name="settings_alarm_delay">Alarm delay (seconds)</string>
+    <string name="settings_about">About Smart Pocket</string>
+    <string name="settings_version">Version 1.0.0</string>
+
+    <!-- Notifications -->
+    <string name="notif_channel_security">Security Alerts</string>
+    <string name="notif_channel_service">Background Service</string>
+    <string name="notif_service_title">Smart Pocket is protecting you</string>
+    <string name="notif_bag_breach">Bag breach detected!</string>
+    <string name="notif_bt_lost">Guardian device out of range!</string>
+    <string name="notif_lockdown_active">Lockdown mode activated</string>
+
+    <!-- Permissions -->
+    <string name="perm_camera_rationale">Camera permission is required for face recognition.</string>
+    <string name="perm_bt_rationale">Bluetooth permission is required for proximity alerts.</string>
+    <string name="perm_location_rationale">Location permission is required for Bluetooth scanning.</string>
+    <string name="perm_go_settings">Go to Settings</string>
+    <string name="perm_deny">Not now</string>
+</resources>

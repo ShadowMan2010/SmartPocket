@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Palette: Deep Slate + Warm Ivory + Muted Sage -->
+    <color name="sp_background">#0F1117</color>
+    <color name="sp_surface">#1A1D27</color>
+    <color name="sp_surface_elevated">#222535</color>
+    <color name="sp_card">#1E2132</color>
+
+    <!-- Accent: Steel Blue + Soft Amber for alerts -->
+    <color name="sp_accent_primary">#4A7FBD</color>
+    <color name="sp_accent_secondary">#6BA3D6</color>
+    <color name="sp_accent_light">#8BBDE8</color>
+
+    <!-- Status colors -->
+    <color name="sp_safe">#4CAF8A</color>
+    <color name="sp_safe_dim">#2A6B50</color>
+    <color name="sp_warning">#E8A838</color>
+    <color name="sp_warning_dim">#7A5510</color>
+    <color name="sp_danger">#D95F5F</color>
+    <color name="sp_danger_dim">#7A2020</color>
+
+    <!-- Text -->
+    <color name="sp_text_primary">#F0F2F8</color>
+    <color name="sp_text_secondary">#8A90A8</color>
+    <color name="sp_text_tertiary">#555A72</color>
+    <color name="sp_text_accent">#7EB3E8</color>
+
+    <!-- Divider / Border -->
+    <color name="sp_divider">#2A2F45</color>
+    <color name="sp_border">#333852</color>
+
+    <!-- Lockdown overlay -->
+    <color name="sp_lockdown_bg">#0A0C14</color>
+    <color name="sp_lockdown_accent">#C0392B</color>
+
+    <!-- Gradient start/end (used programmatically) -->
+    <color name="sp_gradient_start">#1A1D27</color>
+    <color name="sp_gradient_end">#0F1117</color>
+
+    <!-- Transparent overlays -->
+    <color name="sp_scrim_light">#40000000</color>
+    <color name="sp_scrim_heavy">#CC000000</color>
+
+    <!-- White with alpha for glass effect -->
+    <color name="sp_glass_fill">#0AFFFFFF</color>
+    <color name="sp_glass_border">#18FFFFFF</color>
+</resources>
