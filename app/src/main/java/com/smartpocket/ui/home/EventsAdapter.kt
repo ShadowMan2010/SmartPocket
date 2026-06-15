@@ -52,6 +52,7 @@ class EventsAdapter : ListAdapter<SecurityEvent, EventsAdapter.EventViewHolder>(
                 SecurityEvent.EventType.DISARMED -> R.drawable.ic_shield
                 SecurityEvent.EventType.LOCKDOWN_ACTIVATED -> R.drawable.ic_lock
                 SecurityEvent.EventType.LOCKDOWN_CLEARED -> R.drawable.ic_shield
+                SecurityEvent.EventType.SNATCH_DETECTED -> R.drawable.ic_flash
             }
             ivIcon.setImageResource(iconRes)
 

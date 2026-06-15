@@ -71,6 +71,10 @@ class HomeFragment : Fragment() {
             viewModel.setLockdownEnabled(checked)
         }
 
+        binding.switchSnatch.setOnCheckedChangeListener { _, checked ->
+            viewModel.setSnatchEnabled(checked)
+        }
+
         // Navigate to face auth on tap
         binding.cardFace.setOnClickListener {
             findNavController().navigate(R.id.action_home_to_face)
@@ -211,12 +215,27 @@ class HomeFragment : Fragment() {
         // Lockdown
         binding.switchLockdown.isChecked = state.lockdownEnabled
         binding.tvLockdownStatus.text = if (state.lockdownEnabled) "Will activate on breach" else "Disabled"
+
+        // Snatch detection
+        binding.switchSnatch.isChecked = state.snatchActive
+        binding.tvSnatchStatus.text = when (state.snatchState) {
+            SnatchState.INACTIVE -> getString(R.string.label_inactive)
+            SnatchState.MONITORING -> "Watching"
+            SnatchState.TRIGGERED -> "⚠ Snatch detected!"
+        }
+        binding.tvSnatchStatus.setTextColor(
+            ContextCompat.getColor(requireContext(), when (state.snatchState) {
+                SnatchState.TRIGGERED -> R.color.sp_danger
+                SnatchState.MONITORING -> R.color.sp_safe
+                else -> R.color.sp_text_tertiary
+            })
+        )
     }
 
     // ─────────────────────────── ANIMATIONS ───────────────────────────
 
     private fun animateEntrance() {
-        val cards = listOf(binding.cardBag, binding.cardFace, binding.cardBluetooth, binding.cardLockdown)
+        val cards = listOf(binding.cardBag, binding.cardFace, binding.cardBluetooth, binding.cardLockdown, binding.cardSnatch)
         cards.forEachIndexed { i, card ->
             card.alpha = 0f
             card.translationY = 40f

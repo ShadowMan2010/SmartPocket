@@ -147,7 +147,6 @@
             android:layout_marginTop="16dp"
             android:paddingHorizontal="16dp"
             android:columnCount="2"
-            android:rowCount="2"
             android:useDefaultMargins="true">
 
             <!-- Bag Sensor Card -->
@@ -396,6 +395,71 @@
 
                     <TextView
                         android:id="@+id/tv_lockdown_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/label_inactive"
+                        android:textColor="@color/sp_text_tertiary"
+                        android:textSize="11sp" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Anti-Snatch Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_snatch"
+                style="@style/Style.SmartPocket.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill_horizontal"
+                android:layout_margin="6dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <FrameLayout
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:background="@drawable/bg_icon_container_warning">
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_flash"
+                                android:tint="@color/sp_warning" />
+                        </FrameLayout>
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/switch_snatch"
+                            style="@style/Style.SmartPocket.Switch"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="4dp" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Anti-Snatch"
+                        android:textColor="@color/sp_text_primary"
+                        android:textSize="14sp"
+                        android:fontFamily="sans-serif-medium" />
+
+                    <TextView
+                        android:id="@+id/tv_snatch_status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"

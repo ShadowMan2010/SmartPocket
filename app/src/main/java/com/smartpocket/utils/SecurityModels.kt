@@ -32,6 +32,12 @@ enum class FaceAuthState {
     FAILED
 }
 
+enum class SnatchState {
+    INACTIVE,
+    MONITORING,
+    TRIGGERED
+}
+
 data class SecurityState(
     val armState: ArmState = ArmState.DISARMED,
     val bagSensorActive: Boolean = false,
@@ -40,6 +46,8 @@ data class SecurityState(
     val faceAuthState: FaceAuthState = FaceAuthState.NOT_ENROLLED,
     val bluetoothGuardActive: Boolean = false,
     val bluetoothGuardState: BluetoothGuardState = BluetoothGuardState.INACTIVE,
+    val snatchActive: Boolean = false,
+    val snatchState: SnatchState = SnatchState.INACTIVE,
     val lockdownEnabled: Boolean = true,
     val lastEventTime: Long = 0L
 )
@@ -54,7 +62,8 @@ data class SecurityEvent(
     enum class EventType {
         BAG_BREACH, FACE_VERIFIED, FACE_FAILED,
         BT_LOST, BT_RECONNECTED, ARMED, DISARMED,
-        LOCKDOWN_ACTIVATED, LOCKDOWN_CLEARED
+        LOCKDOWN_ACTIVATED, LOCKDOWN_CLEARED,
+        SNATCH_DETECTED
     }
 
     enum class Severity {

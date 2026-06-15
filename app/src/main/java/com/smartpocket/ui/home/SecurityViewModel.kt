@@ -30,6 +30,7 @@ class SecurityViewModel(application: Application) : AndroidViewModel(application
     private val sensorManager = application.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     private val proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY)
     private val lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
+    private val accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
     private var proximityValue = Float.MAX_VALUE
     private var lightValue = Float.MAX_VALUE
@@ -44,6 +45,16 @@ class SecurityViewModel(application: Application) : AndroidViewModel(application
     private var previousLightState = LightState.UNKNOWN
 
     private enum class LightState { UNKNOWN, DARK, BRIGHT }
+
+    // ───── Snatch Detection ─────
+    private val ACCEL_BASELINE_SAMPLES = 8
+    private val ACCEL_BASELINE_WINDOW_MS = 500L
+    private val SNATCH_THRESHOLD_MS2 = 22f
+    private val SNATCH_DELTA_THRESHOLD_MS2 = 14f
+    private val SNATCH_COOLDOWN_MS = 3000L
+    private val baselineHistory = ArrayDeque<Float>(ACCEL_BASELINE_SAMPLES)
+    private var lastSnatchTime = 0L
+    private var lastAccelTime = 0L
 
     init {
         // Load saved preferences
@@ -75,7 +86,8 @@ class SecurityViewModel(application: Application) : AndroidViewModel(application
             copy(
                 armState = ArmState.DISARMED,
                 bagSensorState = BagSensorState.INACTIVE,
-                bluetoothGuardState = BluetoothGuardState.INACTIVE
+                bluetoothGuardState = BluetoothGuardState.INACTIVE,
+                snatchState = SnatchState.INACTIVE
             )
         }
         addEvent(SecurityEvent(
@@ -102,11 +114,14 @@ class SecurityViewModel(application: Application) : AndroidViewModel(application
     private fun startSensorMonitoring() {
         val current = _securityState.value ?: return
         if (current.bagSensorActive) startBagSensor()
+        if (current.snatchActive) startSnatchSensor()
     }
 
     private fun stopSensorMonitoring() {
         sensorManager.unregisterListener(this)
-        updateState { copy(bagSensorState = BagSensorState.INACTIVE) }
+        baselineHistory.clear()
+        lastSnatchTime = 0L
+        updateState { copy(bagSensorState = BagSensorState.INACTIVE, snatchState = SnatchState.INACTIVE) }
     }
 
     private fun startBagSensor() {
@@ -116,23 +131,100 @@ class SecurityViewModel(application: Application) : AndroidViewModel(application
     }
 
     private fun stopBagSensor() {
-        sensorManager.unregisterListener(this)
         updateState { copy(bagSensorState = BagSensorState.INACTIVE) }
+    }
+
+    // ─────────────────────────── SNATCH DETECTION ───────────────────────────
+
+    fun setSnatchEnabled(enabled: Boolean) {
+        val current = _securityState.value ?: return
+        updateState { copy(snatchActive = enabled) }
+        if (enabled && current.armState == ArmState.ARMED) {
+            startSnatchSensor()
+        } else {
+            stopSnatchSensor()
+        }
+    }
+
+    private fun startSnatchSensor() {
+        updateState { copy(snatchState = SnatchState.MONITORING) }
+        baselineHistory.clear()
+        lastSnatchTime = 0L
+        accelerometerSensor?.let { sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME) }
+    }
+
+    private fun stopSnatchSensor() {
+        updateState { copy(snatchState = SnatchState.INACTIVE) }
+    }
+
+    private fun evaluateSnatch(ax: Float, ay: Float, az: Float) {
+        val magnitude = kotlin.math.sqrt((ax * ax + ay * ay + az * az).toDouble()).toFloat()
+        val now = System.currentTimeMillis()
+
+        // Build baseline from initial rest samples
+        if (baselineHistory.size < ACCEL_BASELINE_SAMPLES) {
+            baselineHistory.addLast(magnitude)
+            return
+        }
+
+        // Update running baseline (shift old, add new)
+        if (now - lastAccelTime > 50) {
+            lastAccelTime = now
+            baselineHistory.removeFirst()
+            baselineHistory.addLast(magnitude)
+        }
+
+        val baseline = baselineHistory.average().toFloat()
+        val delta = magnitude - baseline
+
+        if (magnitude > SNATCH_THRESHOLD_MS2 && delta > SNATCH_DELTA_THRESHOLD_MS2
+            && now - lastSnatchTime > SNATCH_COOLDOWN_MS) {
+            lastSnatchTime = now
+            onSnatchDetected()
+        }
+    }
+
+    private fun onSnatchDetected() {
+        val current = _securityState.value ?: return
+        if (current.snatchState == SnatchState.TRIGGERED) return
+
+        updateState { copy(snatchState = SnatchState.TRIGGERED) }
+
+        val event = SecurityEvent(
+            type = SecurityEvent.EventType.SNATCH_DETECTED,
+            message = "Phone snatched — sudden motion detected!",
+            severity = SecurityEvent.Severity.CRITICAL
+        )
+        addEvent(event)
+        _alertTrigger.postValue(event)
+
+        viewModelScope.launch {
+            delay(alarmDelay * 1000L)
+            val refreshed = _securityState.value ?: return@launch
+            if (refreshed.lockdownEnabled && refreshed.armState == ArmState.ARMED) {
+                triggerLockdown(SecurityEvent.EventType.SNATCH_DETECTED)
+            }
+        }
     }
 
     // ─────────────────────────── SENSOR EVENTS ───────────────────────────
 
     override fun onSensorChanged(event: SensorEvent) {
         val current = _securityState.value ?: return
-        if (current.armState != ArmState.ARMED || !current.bagSensorActive) return
+        if (current.armState != ArmState.ARMED) return
 
         when (event.sensor.type) {
             Sensor.TYPE_PROXIMITY -> {
                 proximityValue = event.values[0]
             }
             Sensor.TYPE_LIGHT -> {
+                if (!current.bagSensorActive) return
                 lightValue = event.values[0]
                 evaluateBagState()
+            }
+            Sensor.TYPE_ACCELEROMETER -> {
+                if (!current.snatchActive) return
+                evaluateSnatch(event.values[0], event.values[1], event.values[2])
             }
         }
     }
